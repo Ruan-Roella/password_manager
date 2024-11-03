@@ -9,7 +9,7 @@ A proposta do projeto é um sistema que gerência senhas pelo `Console`, criptog
 <p align="center" width="100%">
     <img width="10%" src="https://img.shields.io/badge/Versão-1.0-blue"></p>
 
-> ![NOTE]
+> [!NOTE]
 > Antes de executar o `manager.py` talvez será necessário executar.<br/>
 `python -m venv venv`<br/>
 **Windows** <br/>
