@@ -1,7 +1,5 @@
 from source.views import Application
 
-# TODO: Opção de criptogravar várias senhas.
-# TODO: Criar o método de descriptografar.
 
 if __name__ == "__main__":
     app = Application()

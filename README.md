@@ -1,13 +1,25 @@
 Gerenciador de Senhas
 =====================
 
-A proposta do projeto é um sistema que gerência senhas pelo `Console`.
+A proposta do projeto é um sistema que gerência senhas pelo `Console`, criptografando, descriptografando, Salvando e fazendo amostragem dos dados.
 
 <p align="center" width="100%">
-    <img width="33%" src="https://github.com/Ruan-Roella/password_manager/blob/main/image/console_image.png">
+    <img width="45%" src="https://github.com/Ruan-Roella/password_manager/blob/main/image/console_image.png">
 </p>
 <p align="center" width="100%">
     <img width="10%" src="https://img.shields.io/badge/Versão-1.0-blue"></p>
+
+> ![NOTE]
+> Antes de executar o `manager.py` talvez será necessário executar.<br/>
+`python -m venv venv`<br/>
+**Windows** <br/>
+`venv/scripts/activate` <br/>
+**Linux ou MacOS** <br/>
+`source venv/bin/activate` <br/>
+**Instalando as dependências** <br/>
+`pip install -r requirements.txt` <br/>
+***Por fim, basta executar o manager.py***
+
 
 
 
@@ -25,9 +37,7 @@ A proposta do projeto é um sistema que gerência senhas pelo `Console`.
 ### Ver minhas Senhas
 - Nesta parte você precisará copiar e colar a senha criptografada dentro de __db > passwords.yml__, logo após fazer o mesmo processo com sua chave. Após tudo ocorrer corretamente, irá retornar um detalhe monstrando tudo no terminal.
 > [!CAUTION]
-> Não perca sua Chave pois a criptografia é única.
-> A chave é obrigatória para a descriptografia da senha.
-
+> Não perca sua Chave pois a criptografia é única.<br/>A chave é obrigatória para a descriptografia da senha.
 
 
 
