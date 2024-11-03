@@ -51,6 +51,12 @@ def emojis(unicode: str):
     except:
         return 'x'
 
+def strftime(date: str):
+    try:
+        return datetime.fromisoformat(date).strftime("%d/%m/%Y, %H:%M:%S")
+    except ValueError:
+        return date
+
 class Backend:
 
     @property
@@ -82,15 +88,10 @@ class Backend:
             get_item = []
             for item in doc['Body']:
                 if item['password'] == data:
+                    item['created_at'] = strftime(item['created_at'])
                     get_item = item
             
-            details = dict.fromkeys(['Domínio', 'Usuário', 'Senha', 'Data de Registro'])
-            details['Domínio'] = get_item['domain']
-            details['Usuário'] = get_item['username']
-            details['Senha'] = get_item['password']
-            details['Data de Registro'] = datetime.fromisoformat(get_item['created_at']).strftime("%d/%m/%Y, %H:%M:%S")
-
-            return details
+            return list(filter(lambda s: not( s == data ), get_item.values()))
         
 
     def _check_key(self):

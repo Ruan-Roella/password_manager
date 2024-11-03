@@ -204,9 +204,9 @@ class Application(Backend):
             return
         
         data = self.views_details(password.strip())
-        data['Senha'] = descrypted.decode()
-
+        data.insert(2, descrypted.decode())
+        texts = ('Domínio', 'Usuário', 'Senha', 'Data de Registro')
         Console.Write("Resultado: ")
-        for label, value in data.items():
-            Console.Write(f"{label}: {value}", fg='white')
+        for label, value in zip(texts, data):
+            Console.Write(f"{label}: {value}", fg='green', weight='bright')
         Console.ReadLine("← Voltar ")
