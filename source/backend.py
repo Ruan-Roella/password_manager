@@ -75,7 +75,6 @@ class Backend:
     def save(self, token: bytes):
         if not self.check_key:
             Path(KEYDIR).mkdir()
-            #Path(DBFILE).touch()
 
         with open(KEYFILE, 'wb') as file:
             file.write(token)
@@ -150,7 +149,7 @@ class Cryptography:
             key = file.read()
         return key.decode()
 
-    def encrypt(self, password: str):
+    def encrypt(self, password: bytes):
 
         if not isinstance(password, bytes):
             password = password.encode()
@@ -174,8 +173,67 @@ class Cryptography:
         
         return key
 
+class PasswordGenerate:
+    PIN_CODE = string.digits
+    ALNUMERIC = string.ascii_lowercase + string.ascii_uppercase + string.digits + "!@#$"
+
+    @classmethod
+    def pin_code(cls, length: int):
+        if not isinstance(length, int):
+            length = int(length)
+        
+        key = [ secrets.choice(cls.PIN_CODE) for _ in range(length) ]
+        scan = cls._verify_duplicate(key)
+        pin = scan
+        if len(scan) < length:
+            current_len = length - len(scan)
+            for _ in range(current_len):
+                pin.add(secrets.choice(cls.PIN_CODE))
+                break
+        else:
+            for k in key:
+                pin.add(k)
+                break
+        return ''.join(p for p in pin)
+    
+    @classmethod
+    def alnumeric(cls, length: int):
+        if not isinstance(length, int):
+            length = int(length)
+
+        key = [ secrets.choice(cls.ALNUMERIC) for _ in range(length) ]
+
+        alnum = cls._check_alnum(key)
+        return ''.join(k for k in key)
+        
+
+    def _check_alnum(key: list):
+        symbols = []
+        numeric = []
+        for k in key:
+            if k in string.digits:
+                numeric.append(k)
+            if k in "!@#$":
+                symbols.append(k)
+        
+        if len(symbols) < 1:
+            del key[0]
+            key.insert(0, secrets.choice("!@#$"))
+        
+        size = len(numeric)
+        if size < 6:
+            del key[1:size]
+            for idx, num in enumerate(numeric, start=1):
+                key.insert(idx, secrets.choice(string.digits))
+                break
+        return key
+                
+    def _verify_duplicate(_l: list):
+        return set(list(_l))
+
+
 class BaseModel:
-    def __init__(self, *args):
+    def __init__(self):
         r"""
             A database model
 

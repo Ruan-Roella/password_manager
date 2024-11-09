@@ -12,6 +12,7 @@ if __name__ == "__main__":
             'Gerar minha Chave',
             'Salvar uma Senha',
             'Ver minhas Senhas',
+            "Criar uma senha segura",
             'Sair'
         )
 
@@ -26,5 +27,8 @@ if __name__ == "__main__":
                 app.show_password()
                 continue
             case 4:
+                app.generate_password()
+                continue
+            case 5:
                 app.clean_prompt
                 app.running = False

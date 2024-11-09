@@ -7,7 +7,7 @@ A proposta do projeto é um sistema que gerência senhas pelo `Console`, criptog
     <img width="45%" src="https://github.com/Ruan-Roella/password_manager/blob/main/image/console_image.png">
 </p>
 <p align="center" width="100%">
-    <img width="10%" src="https://img.shields.io/badge/Versão-1.0-blue"></p>
+    <img width="10%" src="https://img.shields.io/badge/Versão-1.1.0-blue"></p>
 
 > [!NOTE]
 > Antes de executar o `manager.py` talvez será necessário executar.<br/>
