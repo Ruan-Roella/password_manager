@@ -59,7 +59,7 @@ class Application(Backend):
         Console.Write(f"{emojis('1F511')} Chave: {token.decode()}")
         Console.Write(f'Sua chave foi salva no diretório abaixo ↓:')
         Console.Write(self.key_path, fg='lightmagenta_ex')
-        Console.ReadLine()
+        Console.ReadLine("← Voltar ")
 
     def save_password(self):
         self.check_db
