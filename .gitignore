@@ -1,3 +1,7 @@
 venv/
 db/
 key/
+*.spec
+build/
+dist/
+__pycache__/
