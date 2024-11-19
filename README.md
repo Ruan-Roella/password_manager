@@ -6,21 +6,11 @@ A proposta do projeto é um sistema que gerência senhas pelo `Console`, criptog
 <p align="center" width="100%">
     <img width="45%" src="https://github.com/Ruan-Roella/password_manager/blob/main/image/console_image.png">
 </p>
+
 <p align="center" width="100%">
-    <img width="10%" src="https://img.shields.io/badge/Versão-1.1.0-blue"></p>
-
-> [!NOTE]
-> Antes de executar o `manager.py` talvez será necessário executar.<br/>
-`python -m venv venv`<br/>
-**Windows** <br/>
-`venv/scripts/activate` <br/>
-**Linux ou MacOS** <br/>
-`source venv/bin/activate` <br/>
-**Instalando as dependências** <br/>
-`pip install -r requirements.txt` <br/>
-***Por fim, basta executar o manager.py***
-
-
+    <img width="10%" style="padding: 5px" src="https://img.shields.io/badge/Versão-2.0.0-blue">
+    <img width="10%" style="padding: 5px" src="https://img.shields.io/badge/Download-blue">
+</p>
 
 
 ### Gerar minha Chave
