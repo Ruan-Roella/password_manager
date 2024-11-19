@@ -18,7 +18,7 @@ class Field:
             self._value = Console.ReadLine(f"{self._label}: ")
 
     def help_text(self):
-        Console.Write(self._help_text, fg='black')
+        Console.Write(self._help_text, fg='lightwhite_ex')
         
         if self._opcional:
             Console.Write("Campo Opcional", fg='lightmagenta_ex')
@@ -52,6 +52,3 @@ class PasswordField(Field):
     def __init__(self, label = '', help_text = '', error_msg = '', opcional = False):
         super().__init__(label, help_text, error_msg, opcional, password=True)
 
-class SecretKeyField(Field):
-    def __init__(self, label = '', help_text = '', error_msg = '', opcional = False):
-        super().__init__(label, help_text, error_msg, opcional, password=True)

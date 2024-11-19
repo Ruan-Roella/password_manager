@@ -63,11 +63,14 @@ class Backend:
     def check_key(self):
         return self._check_key()
     @property
+    def check_db(self):
+        return self._check_db()
+    @property
     def key_path(self):
         return KEYFILE
     @property
-    def check_db(self):
-        return self._check_db()
+    def create_db(self):
+        return self._create_db()
     @property
     def db_path(self):
         return os.path.basename(DBFILE)
@@ -91,7 +94,17 @@ class Backend:
                     get_item = item
             
             return list(filter(lambda s: not( s == data ), get_item.values()))
-        
+
+    def select_from_db(self, id: int = None):
+        db = database()
+        with open(DBFILE,'r', encoding='utf-8') as dbfile:
+            query = db.load(dbfile.read())
+
+            result = [ (idx, q['domain'], q['username'], q['password']) for idx, q in enumerate(query['Body'], start=1) ]
+            if id:
+                return [ (domain, password) for idx, domain, _, password in result if idx == id ][0]
+            return result
+
 
     def _check_key(self):
         try:
@@ -105,6 +118,18 @@ class Backend:
             return False
 
     def _check_db(self):
+        db = database()
+        with open(DBFILE, 'r') as file:
+            doc = db.load(file.read())
+
+            try:
+                if doc['Body']:
+                    return True
+                return False
+            except KeyError:
+                return False
+
+    def _create_db(self):
         if not Path(DBDIR).exists():
             Path(DBDIR).mkdir()
         
@@ -230,7 +255,6 @@ class PasswordGenerate:
                 
     def _verify_duplicate(_l: list):
         return set(list(_l))
-
 
 class BaseModel:
     def __init__(self):

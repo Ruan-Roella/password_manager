@@ -4,6 +4,7 @@ from source.forms import forms
 from .models import Passwords
 
 import time, os
+import pyperclip
 
 class Application(Backend):
     def __init__(self):
@@ -62,7 +63,7 @@ class Application(Backend):
         Console.ReadLine("← Voltar ")
 
     def save_password(self):
-        self.check_db
+        self.create_db
         self.header()
 
         if not self.check_key:
@@ -72,7 +73,7 @@ class Application(Backend):
         
 
         Console.Write("Lembrando que, as senhas serão\nCriptografadas para sua segurança.", fg='lightcyan_ex')
-        Console.Write("Cuidado: Não perca ou apague sua Chave,\npois a criptografia é única.", fg='lightyellow_ex', weight='bright')
+        Console.Write("Cuidado: Não perca, altere ou apague\nsua Chave, pois a criptografia é única.", fg='lightyellow_ex', weight='bright')
         Console.ReadLine('Vamos lá ')
 
         # Domain Field
@@ -119,26 +120,7 @@ class Application(Backend):
             self.errors = None
             break
 
-        # Key Field
-        while True:
-            self.header()
-            if self.errors:
-                Console.Write(self.errors, fg='lightred_ex')
-
-            key = forms.SecretKeyField(label="Chave", help_text="Para finalizar, informe a sua Chave.", error_msg="Chave inválida, Tente novamente.")
-
-            if key.value == "":
-                self.errors = key.empty_value
-                continue
-
-            if key.value != Cryptography.signature():
-                self.errors = key.error_msg
-                continue
-            
-            self.errors = None
-            break
-
-        crypt = Cryptography(key.value)
+        crypt = Cryptography(Cryptography.signature())
         
         objects = Passwords(
            domain=domain.value,
@@ -151,7 +133,7 @@ class Application(Backend):
         Console.ReadLine("← Voltar ")
 
     def show_password(self):
-        self.check_db
+        self.create_db
         self.header()
 
         if not self.check_key:
@@ -159,9 +141,35 @@ class Application(Backend):
             Console.ReadLine("← Voltar ")
             return
         
-        Console.Write(f"Para ver uma senha, você precisa\nprimeiro acessar: db > {self.db_path},\ncopiar a senha que deseja descriptografar\ne informar-la no campo Senha.", fg='yellow')
-        Console.Write("Logo após, você precisa fornecer sua Chave.\nAssim você irá conseguir recuperar a sua senha.", fg='yellow')
-        Console.ReadLine("Vamos lá ")
+        if not self.check_db:
+            Console.Write("Você Ainda não tem nenhuma senha salva.")
+            Console.ReadLine("← Voltar ")
+            return
+
+        while True:
+            self.header()
+            if self.errors:
+                Console.Write(self.errors, fg='lightred_ex')
+            
+            Console.Write("Escolha uma das opções para copiar a\nsenha criptografada do banco de dados.", fg='magenta')
+            for idx, domain, username, _ in self.select_from_db():
+                Console.Write(f"[{idx}] {domain}\t{username}")
+
+            try: 
+                opt = int(Console.ReadLine("Selecione: "))
+                if opt > len(self.select_from_db()):
+                    raise ValueError
+            except ValueError:
+                Console.Write('Opção inválida.', fg='red')
+                time.sleep(1)
+                os.system('cls')
+                continue
+            clipbord = self.select_from_db(opt)
+            pyperclip.copy(clipbord[1])
+            Console.Write("Senha copiada con sucesso.", fg='lightgreen_ex')
+            Console.ReadLine("Continuar → ")
+            break
+
 
         # Password Field
         while True:
@@ -178,27 +186,8 @@ class Application(Backend):
             self.errors = None
             break
 
-        # Key Field
-        while True:
-            self.header()
-            if self.errors:
-                Console.Write(self.errors, fg='lightred_ex')
-
-            key = forms.SecretKeyField(label="Chave", help_text="Para finalizar, informe a sua Chave.", error_msg="Chave inválida, Tente novamente.")
-
-            if key.value == "":
-                self.errors = key.empty_value
-                continue
-
-            if key.value != Cryptography.signature():
-                self.errors = key.error_msg
-                continue
-
-            self.errors = None
-            break
-
         try:
-            crypt = Cryptography(key.value)
+            crypt = Cryptography(Cryptography.signature())
             descrypted = crypt.decrypt(password.value)
         except InvalidToken:
             Console.Write("Senha inválida ou criptografia não foi feita com esta chave.", fg='red')
