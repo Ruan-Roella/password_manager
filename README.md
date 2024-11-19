@@ -9,9 +9,11 @@ A proposta do projeto é um sistema que gerência senhas pelo `Console`, criptog
 
 <p align="center" width="100%">
     <img width="10%" style="padding: 5px" src="https://img.shields.io/badge/Versão-2.0.0-blue">
-    <img width="10%" style="padding: 5px" src="https://img.shields.io/badge/Download-blue">
-</p>
+    <a href="https://github.com/Ruan-Roella/password_manager/releases">
+        <img src="https://img.shields.io/badge/Download-beta-orange.svg">
+    </a>
 
+</p>
 
 ### Gerar minha Chave
 - Cria uma chave em em um diretório `key` com arquivo `key.key` onde ficará armazenada a Chave que irá usar para **Salvar** e __Ver__ suas senhas.
