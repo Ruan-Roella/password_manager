@@ -32,4 +32,6 @@ A proposta do projeto é um sistema que gerência senhas pelo `Console`, criptog
 > Não perca sua Chave pois a criptografia é única.<br/>A chave é obrigatória para a descriptografia da senha.
 
 
-
+License
+========
+**Icon**: <a href="https://www.flaticon.com/free-icon/password-manager_15096949?term=password+manager&page=1&position=4&origin=tag&related_id=15096949"> flaticon.com</a>
