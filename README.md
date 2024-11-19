@@ -9,7 +9,7 @@ A proposta do projeto é um sistema que gerência senhas pelo `Console`, criptog
 
 <p align="center" width="100%">
     <img width="10%" style="padding: 5px" src="https://img.shields.io/badge/Versão-2.0.0-blue">
-    <a href="https://github.com/Ruan-Roella/password_manager/releases">
+    <a href="https://github.com/Ruan-Roella/password_manager/releases/tag/Console">
         <img src="https://img.shields.io/badge/Download-beta-orange.svg">
     </a>
 
