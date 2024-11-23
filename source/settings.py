@@ -2,7 +2,7 @@ from pathlib import Path
 
 import os
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASE = {
     "DIR": BASE_DIR / 'data',

@@ -2,7 +2,7 @@ from ruamel.yaml import YAML
 from ruamel.yaml import CommentedMap as OrderedDict
 from ruamel.yaml import CommentedSeq as OrderedList
 
-from source.core.conf import DATABASE
+from source.settings import DATABASE
 
 from typing import TypeAlias, Union
 from os import PathLike

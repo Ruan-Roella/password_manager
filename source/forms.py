@@ -1,4 +1,4 @@
-from ..console import Console
+from source.console import Console
 
 class Field:
     def __init__(self, label: str | None = None, help_text: str | None = None, error_msg: str | None = None, opcional: bool = False, password: bool = False):

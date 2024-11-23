@@ -1,5 +1,8 @@
-from source.core import Backend, Console, TextField, PasswordField, Cryptography, InvalidToken, PasswordGenerate
-from source.core.db import Users, Passwords
+from source.backend import Backend, Cryptography, InvalidToken, PasswordGenerate
+from source.console import Console
+from source.db import Users, Passwords
+from source.forms import TextField, PasswordField
+
 
 import time, os
 import pyperclip

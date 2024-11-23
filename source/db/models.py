@@ -1,8 +1,8 @@
 from typing import Self
 from datetime import datetime
 
-from source.core.db import Database
-from source.core.conf import DB_FILE
+from .base import Database
+from source.settings import DB_FILE
 
 class BaseModel:
     instance = None
