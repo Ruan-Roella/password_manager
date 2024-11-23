@@ -18,13 +18,12 @@ A proposta do projeto é um sistema que gerência senhas pelo `Console`, criptog
 ### Introdução
 _Ao iniciar o aplicativo pela primeira vez, será necessário selecionar a primeira opção para criar um PIN e logo após gerar sua chave. A partir dai você poderá Salvar e Visualizar suas senhas normalmente._
 
-<img src=" https://img.shields.io/badge/Adicionados-4BB543" />
+<img src=" https://img.shields.io/badge/Adicionados-4BB543" style="padding: 10px" />
 
 - **PIN CODE**
 - **Todas as senhas listada em `Ver Minhas Senhas`**
 
-
-<img src=" https://img.shields.io/badge/Removidos-BB2124" />
+<img src=" https://img.shields.io/badge/Removidos-BB2124" style="padding: 10px;" />
 
 - **Não é necessário copiar e colar a chave de criptografia.**
 - **Não é necessário copiar e colar a senha criptografada.**
