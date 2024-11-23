@@ -1,7 +1,5 @@
-from .backend import Console, Backend, Cryptography, InvalidToken, PasswordGenerate
-from .backend import emojis
-from source.forms import forms
-from .models import Passwords
+from source.core import Backend, Console, TextField, PasswordField, Cryptography, InvalidToken, PasswordGenerate
+from source.core.db import Users, Passwords
 
 import time, os
 import pyperclip
@@ -22,14 +20,16 @@ class Application(Backend):
         Console.Write("=="*18, fg='white')
 
     def menu_option(self, *options: object):
-        if not self.check_key:
+        if not self.is_registred():
             Console.Write("Bem-Vindo, por favor gere sua chave\nantes de começar. Obrigado!", fg='lightcyan_ex', weight='bright')
         
-        menu ={ k: v for k,v in enumerate(options, start=1) }
-        #Console.Write("\n")
-        
-        menu_items = [f'[{i}] {opt}\n' for i, opt in menu.items()]
-        Console.Write(*menu_items)
+        if isinstance(options[0], tuple):
+            Console.Write(f" #  Domínio\t\tDescrição")
+            for opt in options:
+                Console.Write(f"[{opt[0]}] {opt[1]}\t\t{opt[2]}")
+        else:
+            for idx, item in enumerate(options, start=1):
+                Console.Write(f"[{idx}] {item}")
 
         try: 
             opt = int(Console.ReadLine("Selecione: "))
@@ -40,33 +40,67 @@ class Application(Backend):
         else:
             return opt
 
+    def secure_pincode(self, title: str):
+
+        while True:
+            self.header()
+
+            Console.Write(title, fg='magenta', weight='bright')
+
+            if self.errors:
+                Console.Write(self.errors, fg='lightred_ex')
+
+            pin = PasswordField("PIN", "Digitos mín 4 max 6.", error_msg="Pin inválido, Tente novamente.")
+            if pin.value == '':
+                self.errors = pin.empty_value
+                continue
+            
+            if len(pin.value) < 4 or len(pin.value) > 6:
+                self.errors = pin.error_msg
+                continue
+
+            if not pin.value.isdigit():
+                self.errors = "PIN pode ser apenas digitos."
+                continue
+
+            pin2 = PasswordField("Confirme o PIN", error_msg="Os PIN são diferentes.")
+
+            if pin.value != pin2.value:
+                self.errors = pin2.error_msg
+                continue
+            break
+        return pin
+
     def generate_key(self):
         
-        if self.check_key:
+        if self.is_registred():
 
             self.header()
             Console.Write("Você já tem uma chave. Use para\ncriptografar suas senhas na opção\n\"Salvar uma senha\".", fg='yellow')
             Console.ReadLine("← Voltar ")
             return
         
+        pincode = self.secure_pincode(title="Crie um PIN.")
+
         self.header()
-        token = Cryptography.generate_key()
         
+        token = Cryptography.generate_key()
+        user = Users(
+            pin = self.set_pincode(pincode.value),
+            key = token
+        )
+        user.save()
+
         Console.Write("Gerando...", fg='magenta')
-        self.save(token)
         time.sleep(1)
 
-        Console.Write("Parabéns, sua Chave foi criada com sucesso.")
-        Console.Write(f"{emojis('1F511')} Chave: {token.decode()}")
-        Console.Write(f'Sua chave foi salva no diretório abaixo ↓:')
-        Console.Write(self.key_path, fg='lightmagenta_ex')
+        Console.Write("Parabéns, sua Chave foi criada com sucesso.", fg='lightgreen_ex')
         Console.ReadLine("← Voltar ")
 
     def save_password(self):
-        self.create_db
         self.header()
 
-        if not self.check_key:
+        if not self.is_registred():
             Console.Write("Você ainda não gerou sua chave.", fg='lightred_ex')
             Console.ReadLine("← Voltar ")
             return
@@ -82,7 +116,7 @@ class Application(Backend):
             if self.errors:
                 Console.Write(self.errors, fg='lightred_ex')
             
-            domain = forms.TextField(label='Domínio', help_text="O domínio refere-se ao site que você\ndeseja salvar a senha. Exemplo: Youtube")
+            domain = TextField(label='Domínio', help_text="O domínio refere-se ao site que você\ndeseja salvar a senha. Exemplo: Youtube")
 
             if domain.value == "":
                 self.errors = domain.empty_value
@@ -97,7 +131,7 @@ class Application(Backend):
             if self.errors:
                 Console.Write(self.errors, fg='lightred_ex')
 
-            username = forms.TextField(label="Usuário", help_text="O usuário refere-se login no domínio\nespecificado.", opcional=True)
+            username = TextField(label="Descrição", help_text="Uma descrição ao que se refere,\nPode ser Nome de Usuário.", opcional=True)
             
             break
 
@@ -107,7 +141,7 @@ class Application(Backend):
             if self.errors:
                 Console.Write(self.errors, fg='lightred_ex')
 
-            password = forms.PasswordField( label="Senha", help_text="Senha do seu domínio especificado.", error_msg="Senha muito curta.")
+            password = PasswordField( label="Senha", help_text="Senha do seu domínio especificado.", error_msg="Senha muito curta.")
 
             if password.value == "":
                 self.errors = password.empty_value
@@ -120,28 +154,35 @@ class Application(Backend):
             self.errors = None
             break
 
-        crypt = Cryptography(Cryptography.signature())
-        
-        objects = Passwords(
-           domain=domain.value,
-           username=username.value,
-           password=crypt.encrypt(password.value)
-        )
+        pincode = self.secure_pincode(title="Para confirmar que é você mesmo.\nInforme seu PIN.")
 
-        objects.save()
-        Console.Write("Senha criptografada com sucesso.", fg='green')
+        if self.pin_isvalid(pincode.value):
+            crypt = Cryptography(Cryptography.signature())
+            pwd = crypt.encrypt(password.value).decode()
+
+            objects = Passwords(
+            domain=domain.value,
+            description=username.value,
+            password=pwd
+            )
+
+            objects.save()
+            Console.Write("Senha criptografada com sucesso.", fg='green')
+            Console.ReadLine("← Voltar ")
+            return
+        
+        Console.Write("Oops... Houve algo de errado.", fg='green')
         Console.ReadLine("← Voltar ")
 
     def show_password(self):
-        self.create_db
         self.header()
 
-        if not self.check_key:
+        if not self.is_registred():
             Console.Write("Você ainda não gerou sua chave.", fg='lightred_ex')
             Console.ReadLine("← Voltar ")
             return
         
-        if not self.check_db:
+        if not self.select_from('Body'):
             Console.Write("Você Ainda não tem nenhuma senha salva.")
             Console.ReadLine("← Voltar ")
             return
@@ -152,20 +193,11 @@ class Application(Backend):
                 Console.Write(self.errors, fg='lightred_ex')
             
             Console.Write("Escolha uma das opções para copiar a\nsenha criptografada do banco de dados.", fg='magenta')
-            for idx, domain, username, _ in self.select_from_db():
-                Console.Write(f"[{idx}] {domain}\t{username}")
+            menu = self.select_from('Body', ['id', 'domain', 'description'])
+            opt = self.menu_option(*menu)
 
-            try: 
-                opt = int(Console.ReadLine("Selecione: "))
-                if opt > len(self.select_from_db()):
-                    raise ValueError
-            except ValueError:
-                Console.Write('Opção inválida.', fg='red')
-                time.sleep(1)
-                os.system('cls')
-                continue
-            clipbord = self.select_from_db(opt)
-            pyperclip.copy(clipbord[1])
+            clipbord = self.get_password(opt)
+            pyperclip.copy(clipbord)
             Console.Write("Senha copiada con sucesso.", fg='lightgreen_ex')
             Console.ReadLine("Continuar → ")
             break
@@ -177,7 +209,7 @@ class Application(Backend):
             if self.errors:
                 Console.Write(self.errors, fg='lightred_ex')
 
-            password = forms.PasswordField(label="Senha", help_text="Senha criptografada.")
+            password = PasswordField(label="Senha", help_text="Senha criptografada.")
 
             if password.value == "":
                 self.errors = password.empty_value
@@ -194,8 +226,8 @@ class Application(Backend):
             Console.ReadLine("← Voltar ")
             return
         
-        data = self.views_details(password.value)
-        data.insert(2, descrypted.decode())
+        data = self.show_details(opt)
+        data[2] = descrypted.decode()
         texts = ('Domínio', 'Usuário', 'Senha', 'Data de Registro')
         Console.Write("Resultado: ")
         for label, value in zip(texts, data):
@@ -229,7 +261,7 @@ class Application(Backend):
                             if self.errors:
                                 Console.Write(self.errors, fg="lightred_ex")
 
-                            length = forms.TextField(label="Tamanho", help_text="mínimo 4 e máximo 6.", error_msg="Tamnho inválido.")
+                            length = TextField(label="Tamanho", help_text="mínimo 4 e máximo 6.", error_msg="Tamnho inválido.")
 
                             if length.value == "":
                                 self.errors = length.empty_value
@@ -264,7 +296,7 @@ class Application(Backend):
                             if self.errors:
                                 Console.Write(self.errors, fg='lightred_ex')
 
-                            alnum = forms.TextField(label="Tamanho", help_text="mínimo 8 e máximo 23.", error_msg="Tamanho inválido.")
+                            alnum = TextField(label="Tamanho", help_text="mínimo 8 e máximo 23.", error_msg="Tamanho inválido.")
 
                             if alnum.value == "":
                                 self.errors = alnum.empty_value

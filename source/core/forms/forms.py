@@ -1,8 +1,7 @@
-
-from ..backend import Console
+from ..console import Console
 
 class Field:
-    def __init__(self, label: str = '', help_text: str = '', error_msg: str = '', opcional: bool = False, password: bool = False):
+    def __init__(self, label: str | None = None, help_text: str | None = None, error_msg: str | None = None, opcional: bool = False, password: bool = False):
         self._label = label
         self._help_text = help_text
         self._error_msg = error_msg
@@ -18,7 +17,8 @@ class Field:
             self._value = Console.ReadLine(f"{self._label}: ")
 
     def help_text(self):
-        Console.Write(self._help_text, fg='lightwhite_ex')
+        if self._help_text:
+            Console.Write(self._help_text, fg='lightwhite_ex')
         
         if self._opcional:
             Console.Write("Campo Opcional", fg='lightmagenta_ex')
@@ -52,3 +52,8 @@ class PasswordField(Field):
     def __init__(self, label = '', help_text = '', error_msg = '', opcional = False):
         super().__init__(label, help_text, error_msg, opcional, password=True)
 
+
+__all__ = [
+    'TextField',
+    'PasswordField'
+]

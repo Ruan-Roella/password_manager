@@ -5,14 +5,11 @@ from pathlib import Path
 from cryptography.fernet import Fernet, InvalidToken
 from datetime import datetime
 
-from ruamel.yaml import YAML
-from ruamel.yaml import CommentedMap as OrderedDict
-from ruamel.yaml import CommentedSeq as OrderedList
 
 import string, secrets, hashlib, base64, os
 
 
-BASEDIR = Path(__file__).resolve().parent.parent
+
 KEYDIR = BASEDIR / 'key'
 DBDIR = BASEDIR / 'db'
 
@@ -20,9 +17,6 @@ KEYFILE = KEYDIR / 'key.key'
 DBFILE = DBDIR / 'passwords.yml'
 
 
-ForegroundColor: TypeAlias = Literal['black', 'blue', 'cyan', 'green', 'lightblack_ex', 'lightblue_ex', 'lightcyan_ex', 'lightgreen_ex', 'lightmagenta_ex', 'lightred_ex', 'lightwhite_ex', 'lightyellow_ex', 'magenta', 'red', 'white', 'yellow']
-BackgroundColor: TypeAlias = Literal['black', 'blue', 'cyan', 'green', 'lightblack_ex', 'lightblue_ex', 'lightcyan_ex', 'lightgreen_ex', 'lightmagenta_ex', 'lightred_ex', 'lightwhite_ex', 'lightyellow_ex', 'magenta', 'red', 'white', 'yellow']
-FontWeight: TypeAlias = Literal['normal', 'bright', 'dim']
 
 __version__ = 1.0
 
@@ -140,121 +134,11 @@ class Backend:
             with open(DBFILE, 'w') as db_file:
                 db.dump(data, db_file)
 
-class Console:
-    "Customize the echo console"
-    
-    @classmethod
-    def Write(cls, *values: object, fg: ForegroundColor = None, bg: BackgroundColor = None, weight: FontWeight = 'normal'):
-        extra = []
-        
-        if fg: extra.append(getattr(Fore, fg.upper()))
-        if bg: extra.append(getattr(Back, bg.upper()))
-        if weight: extra.append(getattr(Style, weight.upper()))
 
-        echo = print(*extra, *values, Style.RESET_ALL, sep=str().strip())
-        return echo
-
-    @classmethod
-    def ReadLine(cls, prompt: object = "", password: bool = False):
-        if password:
-            return getpass(prompt)
-        return input(prompt)
   
-class Cryptography:
-    AVAILABLE_STRING = string.ascii_lowercase + string.ascii_uppercase
-    def __init__(self, key: bytes):
-        if not isinstance(key, bytes):
-            key.encode()
-        
-        self.fernet = Fernet(key)
-    
-    @classmethod
-    def signature(cls):
-        with open(KEYFILE, 'rb') as file:
-            key = file.read()
-        return key.decode()
 
-    def encrypt(self, password: bytes):
 
-        if not isinstance(password, bytes):
-            password = password.encode()
 
-        return self.fernet.encrypt(password)
-
-    def decrypt(self, encrypt_pass: bytes):
-        if not isinstance(encrypt_pass, bytes):
-            encrypt_pass = encrypt_pass.encode()
-        
-        return self.fernet.decrypt(encrypt_pass)
-
-    @classmethod
-    def generate_key(cls):
-        token = ''
-        for _ in range(20):
-            token += secrets.choice(cls.AVAILABLE_STRING)
-        
-        hash = hashlib.sha256(token.encode()).digest()
-        key = base64.b64encode(hash)
-        
-        return key
-
-class PasswordGenerate:
-    PIN_CODE = string.digits
-    ALNUMERIC = string.ascii_lowercase + string.ascii_uppercase + string.digits + "!@#$"
-
-    @classmethod
-    def pin_code(cls, length: int):
-        if not isinstance(length, int):
-            length = int(length)
-        
-        key = [ secrets.choice(cls.PIN_CODE) for _ in range(length) ]
-        scan = cls._verify_duplicate(key)
-        pin = scan
-        if len(scan) < length:
-            current_len = length - len(scan)
-            for _ in range(current_len):
-                pin.add(secrets.choice(cls.PIN_CODE))
-                break
-        else:
-            for k in key:
-                pin.add(k)
-                break
-        return ''.join(p for p in pin)
-    
-    @classmethod
-    def alnumeric(cls, length: int):
-        if not isinstance(length, int):
-            length = int(length)
-
-        key = [ secrets.choice(cls.ALNUMERIC) for _ in range(length) ]
-
-        alnum = cls._check_alnum(key)
-        return ''.join(k for k in key)
-        
-
-    def _check_alnum(key: list):
-        symbols = []
-        numeric = []
-        for k in key:
-            if k in string.digits:
-                numeric.append(k)
-            if k in "!@#$":
-                symbols.append(k)
-        
-        if len(symbols) < 1:
-            del key[0]
-            key.insert(0, secrets.choice("!@#$"))
-        
-        size = len(numeric)
-        if size < 6:
-            del key[1:size]
-            for idx, num in enumerate(numeric, start=1):
-                key.insert(idx, secrets.choice(string.digits))
-                break
-        return key
-                
-    def _verify_duplicate(_l: list):
-        return set(list(_l))
 
 class BaseModel:
     def __init__(self):
