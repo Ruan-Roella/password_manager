@@ -79,9 +79,10 @@ class Cryptography:
     
     @classmethod
     def signature(cls):
-        with Database(DATABASE) as db:
-            key = db.connect()
-        return key['Footer'][0]['key']
+        with Database(DB_FILE) as db:
+            doc = db.connect()
+            key = doc['Footer'][0]['key']
+        return key
 
     def encrypt(self, password: bytes):
 

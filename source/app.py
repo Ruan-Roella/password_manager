@@ -40,7 +40,7 @@ class Application(Backend):
         else:
             return opt
 
-    def secure_pincode(self, title: str):
+    def secure_pincode(self, title: str, confirm: bool = False):
 
         while True:
             self.header()
@@ -62,12 +62,13 @@ class Application(Backend):
             if not pin.value.isdigit():
                 self.errors = "PIN pode ser apenas digitos."
                 continue
+            
+            if confirm:
+                pin2 = PasswordField("Confirme o PIN", error_msg="Os PIN são diferentes.")
 
-            pin2 = PasswordField("Confirme o PIN", error_msg="Os PIN são diferentes.")
-
-            if pin.value != pin2.value:
-                self.errors = pin2.error_msg
-                continue
+                if pin.value != pin2.value:
+                    self.errors = pin2.error_msg
+                    continue
             break
         return pin
 
@@ -80,14 +81,14 @@ class Application(Backend):
             Console.ReadLine("← Voltar ")
             return
         
-        pincode = self.secure_pincode(title="Crie um PIN.")
+        pincode = self.secure_pincode(title="Crie um PIN.", confirm=True)
 
         self.header()
         
         token = Cryptography.generate_key()
         user = Users(
             pin = self.set_pincode(pincode.value),
-            key = token
+            key = token.decode()
         )
         user.save()
 
