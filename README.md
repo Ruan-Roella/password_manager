@@ -8,30 +8,38 @@ A proposta do projeto é um sistema que gerência senhas pelo `Console`, criptog
 </p>
 
 <p align="center" width="100%">
-    <img width="10%" style="padding: 5px" src="https://img.shields.io/badge/Versão-2.0.0-blue">
+    <img width="10%" style="padding: 5px" src="https://img.shields.io/badge/Versão-3.0.0-blue">
     <a href="https://github.com/Ruan-Roella/password_manager/releases/tag/Console">
-        <img src="https://img.shields.io/badge/Download-beta-orange.svg">
+        <img src="https://img.shields.io/badge/Download-3.0.0-green.svg">
     </a>
 
 </p>
 
-### Gerar minha Chave
-- Cria uma chave em em um diretório `key` com arquivo `key.key` onde ficará armazenada a Chave que irá usar para **Salvar** e __Ver__ suas senhas.
+### Introdução
+_Ao iniciar o aplicativo pela primeira vez, será necessário selecionar a primeira opção para criar um PIN e logo após gerar sua chave. A partir dai você poderá Salvar e Visualizar suas senhas normalmente._
 
-### Salvar uma Senha
-- É necessário preencher 3(três) campos.
-    - __Domínio__: *É referente ao site e/ou aplicativo a qual você deseja salvar a senha criptografada, podendo ser apenas o nome.*
-        > Exemplo: Domínio: `GitHub` ou `https://github.com/`
-    - __Usuário__: Seu username e/ou email do mesmo, caso queria salvar-lo também. Porém não é criptografado. **Campo Opcional**
-    - __Senha__: A senha que irá ser criptografada e salva em um arquivo `passwords.yml` em um diretório `db`.
-    - __Chave__: E por fim a chave que foi gerada, você irá copiar e colar aqui. Se tudo estiver correto, você receberá uma mensagem de sucesso no terminal.
+<img src=" https://img.shields.io/badge/Adicionados-4BB543" />
 
-### Ver minhas Senhas
-- Nesta parte você precisará copiar e colar a senha criptografada dentro de __db > passwords.yml__, logo após fazer o mesmo processo com sua chave. Após tudo ocorrer corretamente, irá retornar um detalhe monstrando tudo no terminal.
+- **PIN CODE**
+- **Todas as senhas listada em `Ver Minhas Senhas`**
+
+
+<img src=" https://img.shields.io/badge/Removidos-BB2124" />
+
+- **Não é necessário copiar e colar a chave de criptografia.**
+- **Não é necessário copiar e colar a senha criptografada.**
+
 > [!CAUTION]
-> Não perca sua Chave pois a criptografia é única.<br/>A chave é obrigatória para a descriptografia da senha.
+> Não perca, altere ou apague sua Chave pois a criptografia é única.<br/>A chave é obrigatória para a descriptografia da senha.
 
 
-License
+### Bibliotecas
+- **cryptography**: _Usada para a criptografia e descriptografia das senhas com o Fernet._
+- **colorama**: _Uma ferramente simples e poderosa para deixar a interface do console mais dinâmica e estilo._
+- **ruamel.yaml**: _Concerteza minha ferramente favorita para manipular arquivos YAML_
+- **pyperclip**: _Uma lib que descobri durante uma pesquisa de clipboard, e adorei pela objetividade e simplicidade._
+
+
+Contents
 ========
 **Icon**: <a href="https://www.flaticon.com/free-icon/password-manager_15096949?term=password+manager&page=1&position=4&origin=tag&related_id=15096949"> flaticon.com</a>
